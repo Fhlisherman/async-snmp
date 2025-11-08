@@ -2,18 +2,52 @@
   "name": "async-snmp",
   "version": "1.0.0",
   "description": "[![npm version](https://img.shields.io/npm/v/async-snmp.svg)](https://www.npmjs.com/package/async-snmp)",
+  "keywords": [
+    "snmp",
+    "snmpv3",
+    "snmpv2",
+    "net-snmp",
+    "snmp-get",
+    "snmp-set",
+    "oid",
+    "varbind",
+    "network",
+    "network-management",
+    "monitoring",
+    "observability",
+    "agent",
+    "agentless",
+    "typescript",
+    "ts",
+    "node",
+    "nodejs",
+    "npm",
+    "library",
+    "session-manager",
+    "snmp-client",
+    "network-tools",
+    "mib",
+    "mibs",
+    "smi",
+    "security",
+    "async",
+    "async-await",
+    "promises",
+    "monitoring-tool"
+  ],
   "type": "module",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup index.ts --format cjs,esm --dts --out-dir dist --clean --external net-snmp"
+    "build": "tsup index.ts --format cjs,esm --dts --out-dir dist --clean --external net-snmp",
+    "release": "semantic-release"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Fhlisherman/async-snmp.git"
   },
-  "author": "",
+  "author": "Fhlisherman",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Fhlisherman/async-snmp/issues"
@@ -23,7 +57,11 @@
     "@types/net-snmp": "^3.23.0",
     "@types/node": "^24.10.0",
     "tsup": "^8.5.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/npm": "^12.0.1",
+    "semantic-release": "^24.2.0"
   },
   "peerDependencies": {
     "net-snmp": "^3.26.0"
