@@ -6,7 +6,7 @@ A lightweight, zero-dependency (other than `net-snmp`) wrapper for the Node.js *
 
 This package provides a simple, modern API for SNMP operations (`get` and `set`) by converting the original callback-based methods into **Promise-based `async/await`** functions. It's fully typed for a seamless TypeScript experience.
 
-## 🎯 Key Features
+## Key Features
 
 * **Promise-Based:** No more callback hell. Use `async/await` for clean, readable code.
 * **Simple API:** Exposes two main functions: `snmpGet` and `snmpSet`.
@@ -14,7 +14,7 @@ This package provides a simple, modern API for SNMP operations (`get` and `set`)
 * **Error Handling:** Use standard `try...catch` blocks for robust error management.
 * **Lightweight:** A minimal abstraction layer over `net-snmp` with no other dependencies.
 
-## 🤔 Why use `async-snmp`?
+## Why use `async-snmp`?
 
 The `net-snmp` library is powerful but relies on a traditional callback API. In a modern Node.js codebase, this can be cumbersome and lead to complex nested logic.
 
