@@ -8,7 +8,7 @@ export const snmpGet = (
   return new Promise((resolve, reject) => {
     const session = snmpSessionManager.getSession(ip);
 
-    session?.get(oids, (error: unknown, varbinds: Varbind[]) => {
+    session?.get(oids, (error: Error, varbinds: Varbind[]) => {
       if (error) {
         reject(error);
       } else {
@@ -25,7 +25,7 @@ export const snmpSet = (
 ): Promise<{ [key: string]: VarbindValue }> => {
   return new Promise((resolve, reject) => {
     const session = snmpSessionManager.getSession(ip);
-    session?.set(varbinds, (error: unknown, setVarbinds: Varbind[]) => {
+    session?.set(varbinds, (error: Error, setVarbinds: Varbind[]) => {
       if (error) {
         reject(error);
       } else {
