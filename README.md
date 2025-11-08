@@ -1,55 +1,115 @@
-# `async-snmp`
+# async-snmp
 
 [![npm version](https://img.shields.io/npm/v/async-snmp.svg)](https://www.npmjs.com/package/async-snmp)
 
-A lightweight, zero-dependency (other than `net-snmp`) wrapper for the Node.js **[net-snmp](https://www.npmjs.com/package/net-snmp)** library.
+A lightweight TypeScript wrapper around the Node.js `net-snmp` library that exposes Promise-friendly helpers and a small session manager.
 
-This package provides a simple, modern API for SNMP operations (`get` and `set`) by converting the original callback-based methods into **Promise-based `async/await`** functions. It's fully typed for a seamless TypeScript experience.
+## Why this package
 
-## Key Features
+- Converts `net-snmp`'s callback APIs into Promise/async-friendly helpers.
+- Provides a session manager that reuses `net-snmp` sessions per-IP and supports SNMPv3 credentials.
+- TypeScript-first with declaration output so consumers get types.
 
-* **Promise-Based:** No more callback hell. Use `async/await` for clean, readable code.
-* **Simple API:** Exposes two main functions: `snmpGet` and `snmpSet`.
-* **TypeScript Ready:** Fully typed, bundling the necessary `net-snmp` types for you.
-* **Error Handling:** Use standard `try...catch` blocks for robust error management.
-* **Lightweight:** A minimal abstraction layer over `net-snmp` with no other dependencies.
+## Install
 
-## Why use `async-snmp`?
+This package expects `net-snmp` to be available at runtime. Install it as a peer or runtime dependency in your project:
 
-The `net-snmp` library is powerful but relies on a traditional callback API. In a modern Node.js codebase, this can be cumbersome and lead to complex nested logic.
+```bash
+npm install net-snmp
+```
 
-`async-snmp` bridges this gap, allowing you to treat SNMP operations as simple asynchronous calls, just like you would with `fetch` or a database query.
+## Quick usage
 
-**Before (Callbacks):**
-```javascript
-const snmp = require('net-snmp');
-const session = snmp.createSession('127.0.0.1', 'public');
+The package exports a factory `createSnmpManager` and TypeScript types. You can configure credentials in three ways:
 
-session.get(['1.3.6.1.2.1.1.1.0'], (error, varbinds) => {
-  if (error) {
-    console.error(error);
-  } else {
-    console.log(varbinds[0].value.toString());
-  }
-  session.close();
+1. Environment variable: `SNMP_USER_CONFIG` (JSON string)
+2. Provide a default `SnmpUserConfig` when creating a manager
+3. Provide a per-session override when calling `getSession(ip, userConfig)`
+
+Example — default manager (reads `SNMP_USER_CONFIG` if set):
+
+```ts
+import { createSnmpManager } from "async-snmp";
+
+const manager = createSnmpManager();
+const session = manager.getSession("192.168.1.1");
+// Use session.get / session.set per net-snmp API
+```
+
+Example — programmatic default config:
+
+```ts
+import { createSnmpManager, type SnmpUserConfig } from "async-snmp";
+import * as snmp from "net-snmp";
+
+const cfg: SnmpUserConfig = {
+  name: "operator",
+  level: snmp.SecurityLevel.authPriv,
+  authProtocol: snmp.AuthProtocols.sha,
+  authKey: "auth-password",
+  privProtocol: snmp.PrivProtocols.aes,
+  privKey: "priv-password",
+};
+
+const manager = createSnmpManager(cfg);
+const session = manager.getSession("192.168.1.1");
+```
+
+Per-session override example:
+
+```ts
+const tempSession = manager.getSession("192.168.1.2", {
+  name: "tempUser",
+  level: snmp.SecurityLevel.authPriv,
+  authProtocol: snmp.AuthProtocols.sha,
+  authKey: "tmp-auth",
+  privProtocol: snmp.PrivProtocols.aes,
+  privKey: "tmp-priv",
 });
 ```
 
-**After (Async/Await):**
-```javascript
-import { snmpGet } from 'async-snmp';
+## Environment variable (optional)
 
-async function getSysDescr() {
-  try {
-    const varbind = await snmpGet(
-      { host: '127.0.0.1', community: 'public' },
-      '1.3.6.1.2.1.1.1.0'
-    );
-    console.log(varbind.value.toString());
-  } catch (error) {
-    console.error('SNMP Error:', error);
-  }
-}
+You may set `SNMP_USER_CONFIG` to a JSON string to make the manager pick up default credentials on startup. Example (bash):
 
-getSysDescr();
+```bash
+export SNMP_USER_CONFIG='{"name":"operator","level":3,"authProtocol":3,"authKey":"auth","privProtocol":2,"privKey":"priv"}'
+node my-app.js
 ```
+
+The JSON shape matches the exported `SnmpUserConfig` interface: `name`, `level`, `authProtocol`, `authKey`, `privProtocol`, `privKey`.
+
+## Build & bundle
+
+This project uses `tsup` (esbuild) for fast library builds. The `package.json` includes a `build` script that outputs ESM + CJS bundles and type declarations into `dist/`.
+
+Notes:
+
+- Keep `net-snmp` external (do not bundle native/node-specific dependencies). It's declared as a peer dependency in `package.json`.
+- The package sets `"type": "module"` but builds both formats for compatibility.
+
+Build locally:
+
+```bash
+npm install
+npm run build
+```
+
+## API (high-level)
+
+- `createSnmpManager(config?: SnmpUserConfig): SnmpSession` — create a session manager. If `config` is omitted the function will look for `SNMP_USER_CONFIG`.
+- `SnmpSession.getSession(ip: string, userConfig?: SnmpUserConfig)` — get or create a `net-snmp` session for `ip`. If `userConfig` is provided it overrides the manager's default for that session.
+- `SnmpSession.closeSession(ip)` and `SnmpSession.closeAllSessions()` — close sessions to free resources.
+
+## Troubleshooting
+
+- If TypeScript complains about `import`/`export` vs CommonJS, ensure `tsconfig.json` uses `module: "nodenext"` and `package.json` has `"type": "module"` when targeting ESM.
+- Do not attempt to bundle `net-snmp` if it relies on native components; mark it external in bundlers.
+
+## Contributing
+
+PRs are welcome. If you change public API shape, update examples in this README. Add small focused commits and include tests for behavioral changes when possible.
+
+## License
+
+MIT
