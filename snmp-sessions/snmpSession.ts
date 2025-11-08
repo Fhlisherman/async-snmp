@@ -3,10 +3,10 @@ import * as snmp from "net-snmp";
 /** Configuration for SNMPv3 user authentication and privacy */
 export interface SnmpUserConfig {
   name: string;
-  level: number;
-  authProtocol: number;
+  level: snmp.SecurityLevel;
+  authProtocol: snmp.AuthProtocols;
   authKey: string;
-  privProtocol: number;
+  privProtocol: snmp.PrivProtocols;
   privKey: string;
 }
 
