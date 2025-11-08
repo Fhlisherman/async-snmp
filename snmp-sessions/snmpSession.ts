@@ -1,20 +1,37 @@
 import * as snmp from "net-snmp";
 
-const USER = {
-  name: "fred",
-  level: snmp.SecurityLevel.authPriv,
-  authProtocol: snmp.AuthProtocols.sha,
-  authKey: "adar",
-  privProtocol: snmp.PrivProtocols.aes,
-  privKey: "adar",
-};
+/** Configuration for SNMPv3 user authentication and privacy */
+export interface SnmpUserConfig {
+  name: string;
+  level: number;
+  authProtocol: number;
+  authKey: string;
+  privProtocol: number;
+  privKey: string;
+}
 
 class SnmpSession {
-  private sessions: { [ip: string]: any } = {};
+  /** Default SNMP v3 user configuration */
+  private defaultUser: SnmpUserConfig = {
+    name: "admin",
+    level: snmp.SecurityLevel.authPriv,
+    authProtocol: snmp.AuthProtocols.sha,
+    authKey: "public",
+    privProtocol: snmp.PrivProtocols.aes,
+    privKey: "public"
+  };
 
-  getSession(ip: string): Record<string, any> | null {
+  private sessions: Record<string, snmp.Session> = {};
+
+  constructor(config?: SnmpUserConfig) {
+    if (config) {
+      this.defaultUser = config;
+    }
+  }
+
+  getSession(ip: string, userConfig?: SnmpUserConfig): Record<string, any> | null {
     if (!this.sessions[ip]) {
-      this.sessions[ip] = snmp.createV3Session(ip, USER);
+      this.sessions[ip] = snmp.createV3Session(ip, userConfig || this.defaultUser);
     }
     return this.sessions[ip];
   }
@@ -27,11 +44,11 @@ class SnmpSession {
   }
 
   closeAllSessions() {
-    for (const ip in this.sessions) {
-      this.sessions[ip].close();
+    for (const session of Object.values(this.sessions)) {
+      session.close();
     }
     this.sessions = {};
   }
 }
 
-export const snmpSessionManager = new SnmpSession();
+export const snmpSessionManager = new SnmpSession(process.env.SNMP_USER_CONFIG ? JSON.parse(process.env.SNMP_USER_CONFIG) : undefined);
