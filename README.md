@@ -23,8 +23,7 @@ npm install net-snmp
 You may set `SNMP_USER_CONFIG` to a JSON string to make the manager pick up default credentials on startup. Example (bash):
 
 ```bash
-export SNMP_USER_CONFIG='{"name":"operator","level":3,"authProtocol":3,"authKey":"auth","privProtocol":2,"privKey":"priv"}'
-node my-app.js
+SNMP_USER_CONFIG='{"name":"operator","level":3,"authProtocol":3,"authKey":"auth","privProtocol":2,"privKey":"priv"}'
 ```
 
 The JSON shape matches the exported `SnmpUserConfig` interface: `name`, `level`, `authProtocol`, `authKey`, `privProtocol`, `privKey`.
