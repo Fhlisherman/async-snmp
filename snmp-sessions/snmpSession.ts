@@ -29,7 +29,7 @@ class SnmpSession {
     }
   }
 
-  getSession(ip: string, userConfig?: SnmpUserConfig): Record<string, any> | null {
+  getSession(ip: string, userConfig?: SnmpUserConfig): snmp.Session {
     if (!this.sessions[ip]) {
       this.sessions[ip] = snmp.createV3Session(ip, userConfig || this.defaultUser);
     }

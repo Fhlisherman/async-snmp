@@ -1,4 +1,4 @@
-import type { Varbind, VarbindValue } from "net-snmp";
+import type { ResponseInvalidError, Varbind, VarbindValue } from "net-snmp";
 import { snmpSessionManager } from "./snmpSession";
 
 export const snmpGet = (
@@ -7,11 +7,11 @@ export const snmpGet = (
 ): Promise<Varbind[]> => {
   return new Promise((resolve, reject) => {
     const session = snmpSessionManager.getSession(ip);
-    session?.get(oids, (error: Error, varbinds: Varbind[]) => {
+    session?.get(oids, (error: ResponseInvalidError | null, varbinds: Varbind[] | undefined) => {
       if (error) {
         reject(error);
       } else {
-        resolve(varbinds);
+        resolve(varbinds || []);
       }
     });
   });
@@ -23,12 +23,11 @@ export const snmpSet = (
 ): Promise<Varbind[]> => {
   return new Promise((resolve, reject) => {
     const session = snmpSessionManager.getSession(ip);
-    session?.set(varbinds, (error: Error, setVarbinds: Varbind[]) => {
+    session?.set(varbinds, (error: ResponseInvalidError | null, setVarbinds: Varbind[] | undefined) => {
       if (error) {
         reject(error);
       } else {
-
-        resolve(setVarbinds);
+        resolve(setVarbinds || []);
       }
     });
   });
