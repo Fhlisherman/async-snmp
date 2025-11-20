@@ -1,28 +1,29 @@
-import * as snmp from "net-snmp";
+
 /** Configuration for SNMPv3 user authentication and privacy */
+import { AuthProtocols, createV3Session, PrivProtocols, SecurityLevel, Session, type User } from "net-snmp";
 
 class SnmpSession {
   /** Default SNMP v3 user configuration */
-  private defaultUser: snmp.User = {
+  private defaultUser: User = {
     name: "admin",
-    level: snmp.SecurityLevel.authPriv,
-    authProtocol: snmp.AuthProtocols.sha,
+    level: SecurityLevel.authPriv,
+    authProtocol: AuthProtocols.sha,
     authKey: "public",
-    privProtocol: snmp.PrivProtocols.aes,
+    privProtocol: PrivProtocols.aes,
     privKey: "public"
   };
 
-  private sessions: Record<string, snmp.Session> = {};
+  private sessions: Record<string, Session> = {};
 
-  constructor(config?: snmp.User) {
+  constructor(config?: User) {
     if (config) {
       this.defaultUser = config;
     }
   }
 
-  getSession(ip: string, userConfig?: snmp.User): snmp.Session {
+  getSession(ip: string, userConfig?: User, options?: any): Session {
     if (!this.sessions[ip]) {
-      this.sessions[ip] = snmp.createV3Session(ip, userConfig || this.defaultUser);
+      this.sessions[ip] = createV3Session(ip, userConfig || this.defaultUser, options);
     }
     return this.sessions[ip];
   }
