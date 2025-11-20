@@ -110,5 +110,15 @@ async function setSysName() {
 - The package expects `net-snmp` available at runtime (listed as a peer dependency). Install it in your project.
 
 If you want examples that show per-session overrides or programmatic manager creation, tell me and I will add them.
+## Troubleshooting
+
+- If TypeScript complains about `import`/`export` vs CommonJS, ensure `tsconfig.json` uses `module: "nodenext"` and `package.json` has `"type": "module"` when targeting ESM.
+- Do not attempt to bundle `net-snmp` if it relies on native components; mark it external in bundlers.
+
+## Contributing
+
+PRs are welcome. If you change public API shape, update examples in this README. Add small focused commits and include tests for behavioral changes when possible.
+
+## License
 
 MIT
