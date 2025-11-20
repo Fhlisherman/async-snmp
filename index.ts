@@ -1,1 +1,1 @@
-export { snmpGet, snmpSet } from './snmp-sessions/snmp';
+export { snmpGet, snmpSet ,originizeResult } from './snmp-sessions/snmp';

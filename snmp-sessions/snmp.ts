@@ -4,16 +4,14 @@ import { snmpSessionManager } from "./snmpSession";
 export const snmpGet = (
   ip: string,
   oids: string[]
-): Promise<Record<string, VarbindValue>> => {
+): Promise<Varbind[]> => {
   return new Promise((resolve, reject) => {
     const session = snmpSessionManager.getSession(ip);
-
     session?.get(oids, (error: Error, varbinds: Varbind[]) => {
       if (error) {
         reject(error);
       } else {
-        const result = originizeResult(varbinds);
-        resolve(result);
+        resolve(varbinds);
       }
     });
   });
@@ -22,21 +20,21 @@ export const snmpGet = (
 export const snmpSet = (
   ip: string,
   varbinds: Varbind[]
-): Promise<{ [key: string]: VarbindValue }> => {
+): Promise<Varbind[]> => {
   return new Promise((resolve, reject) => {
     const session = snmpSessionManager.getSession(ip);
     session?.set(varbinds, (error: Error, setVarbinds: Varbind[]) => {
       if (error) {
         reject(error);
       } else {
-        const result = originizeResult(setVarbinds);
-        resolve(result);
+
+        resolve(setVarbinds);
       }
     });
   });
 };
 
-const originizeResult = (varbinds: Varbind[]): Record<string, VarbindValue> => {
+export const originizeResult = (varbinds: Varbind[]): Record<string, VarbindValue> => {
   return varbinds.reduce((acc, varbind) => {
     const key = varbind.oid;
     acc[key] = Buffer.isBuffer(varbind.value)
