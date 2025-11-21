@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/Fhlisherman/async-snmp/compare/v1.0.0...v1.0.1) (2025-11-21)
+
+
+### Bug Fixes
+
+* modify snmp-sessions/snmp.ts snmp-sessions/snmpSession.ts  in root ([b6f46ae](https://github.com/Fhlisherman/async-snmp/commit/b6f46ae3a13a8b2ce4ca22c56a6b5a4e2b885f99))
+
 # 1.0.0 (2025-11-21)
 
 
