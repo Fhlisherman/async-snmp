@@ -1,3 +1,11 @@
+## [1.0.2](https://github.com/Fhlisherman/async-snmp/compare/v1.0.1...v1.0.2) (2025-11-21)
+
+
+### Bug Fixes
+
+* modify CHANGELOG.md package.json  in root ([b3ed2bd](https://github.com/Fhlisherman/async-snmp/commit/b3ed2bdb619ea57e790e4c7c24361465ee2205c7))
+* modify package.json  in root ([63b11b4](https://github.com/Fhlisherman/async-snmp/commit/63b11b4da6c7283eb2aadc5565be8cd280aaed9e))
+
 ## [1.0.1](https://github.com/Fhlisherman/async-snmp/compare/v1.0.0...v1.0.1) (2025-11-21)
 
 
