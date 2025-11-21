@@ -3,7 +3,6 @@
 import { AuthProtocols, createV3Session, PrivProtocols, SecurityLevel, Session, type User } from "net-snmp";
 
 class SnmpSession {
-  /** Default SNMP v3 user configuration */
   private defaultUser: User = {
     name: "admin",
     level: SecurityLevel.authPriv,
