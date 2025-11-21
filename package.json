@@ -1,6 +1,6 @@
 {
   "name": "async-snmp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "[![npm version](https://img.shields.io/npm/v/async-snmp.svg)](https://www.npmjs.com/package/async-snmp)",
   "keywords": [
     "snmp",
